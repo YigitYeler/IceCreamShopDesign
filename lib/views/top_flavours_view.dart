@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class TopFlavours extends StatefulWidget {
   const TopFlavours({Key key}) : super(key: key);
@@ -10,48 +11,70 @@ class TopFlavours extends StatefulWidget {
 class _TopFlavoursState extends State<TopFlavours> {
   @override
   Widget build(BuildContext context) {
+    CollectionReference data = FirebaseFirestore.instance.collection('data');
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.pink,
-        borderRadius: BorderRadius.circular(17),
-      ),
-      width: width,
-      height: height * 20 / 100,
-      child: Row(
-        children: [
-          imageContainer(height, width),
-          contentContainer(width, height),
-        ],
-      ),
+    return FutureBuilder<DocumentSnapshot>(
+      future: data.doc("topFlavours").get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return Text("Something went wrong");
+        }
+
+        if (snapshot.hasData && !snapshot.data.exists) {
+          return Text("Document does not exist");
+        }
+
+        if (snapshot.connectionState == ConnectionState.done) {
+          Map<String, dynamic> data =
+              snapshot.data.data() as Map<String, dynamic>;
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.pink,
+              borderRadius: BorderRadius.circular(17),
+            ),
+            width: width,
+            height: height * 20 / 100,
+            child: Row(
+              children: [
+                imageContainer(height, width),
+                contentContainer(data, width, height),
+              ],
+            ),
+          );
+        }
+
+        return Text("loading");
+      },
     );
   }
 
-  Container contentContainer(double width, double height) {
+  Container contentContainer(
+      Map<String, dynamic> data, double width, double height) {
     return Container(
       width: width * 50 / 100,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            "Vanilla Ice Cream",
+            data["title"],
             style: TextStyle(
               fontWeight: FontWeight.w700,
               fontSize: 17,
             ),
           ),
-          secondRow(height, width),
-          thirdRow(),
+          secondRow(data, height, width),
+          thirdRow(data),
         ],
       ),
     );
   }
 
-  Container thirdRow() {
+  Container thirdRow(Map<String, dynamic> data) {
     return Container(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Container(
             child: Row(
@@ -61,7 +84,7 @@ class _TopFlavoursState extends State<TopFlavours> {
                   color: Colors.red,
                 ),
                 Text(
-                  "14,60",
+                  "${data["price"]}",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
@@ -85,7 +108,7 @@ class _TopFlavoursState extends State<TopFlavours> {
     );
   }
 
-  Row secondRow(double height, double width) {
+  Row secondRow(Map<String, dynamic> data, double height, double width) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
@@ -99,7 +122,7 @@ class _TopFlavoursState extends State<TopFlavours> {
           child: Padding(
             padding: EdgeInsets.only(top: height * 0.4 / 100),
             child: Text(
-              "1 KG",
+              data["quantity"],
               textAlign: TextAlign.center,
               style: TextStyle(fontWeight: FontWeight.w500),
             ),
@@ -113,7 +136,7 @@ class _TopFlavoursState extends State<TopFlavours> {
                 color: Colors.yellow,
               ),
               Text(
-                "4.9",
+                '${data["point"]}',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontWeight: FontWeight.w500),
               ),

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:ice_cream_shop/views/product_content/appbar_icon.dart';
 import 'package:ice_cream_shop/views/title_text_view.dart';
@@ -12,12 +13,14 @@ class ProductContent extends StatefulWidget {
 class _ProductContentState extends State<ProductContent> {
   @override
   Widget build(BuildContext context) {
+    CollectionReference data = FirebaseFirestore.instance.collection('data');
+
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.pink,
+        backgroundColor: Color.fromRGBO(236, 198, 211, 1),
         leading: AppBarIcon(
           icon: Icons.arrow_back,
           isLeading: true,
@@ -38,33 +41,55 @@ class _ProductContentState extends State<ProductContent> {
               width: width,
               height: height * 40 / 100,
               decoration: BoxDecoration(
-                color: Colors.pink,
+                color: Color.fromRGBO(236, 198, 211, 1),
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(40),
                 ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(top: height * 5 / 100),
-              width: width * 90 / 100,
-              height: height * 40 / 100,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  TitleText(
-                      title: "Raspberry Ice Cream",
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700),
-                  starsAndReviews(),
-                  quantityAndPriceRow(width),
-                  Text(
-                    "lşsadflkşasmdflkamlkgmsdaöfmçasödmşsadflkşasmdflkamlkgmsdaöfmçasödmfçöasmdşsadflkşasmdflkamlkgmsdaöfmçasödmfçöasmdfçöasmdföasdasdasdasdasdçamweklfmawfkmsdafçömsaödf",
-                    style: TextStyle(fontWeight: FontWeight.w300),
-                  ),
-                  addToCardContainer(width, height)
-                ],
-              ),
+            FutureBuilder<DocumentSnapshot>(
+              future: data.doc("product").get(),
+              builder: (
+                BuildContext context,
+                AsyncSnapshot<DocumentSnapshot> snapshot,
+              ) {
+                if (snapshot.hasError) {
+                  return Text("Something went wrong");
+                }
+
+                if (snapshot.hasData && !snapshot.data.exists) {
+                  return Text("Document does not exist");
+                }
+
+                if (snapshot.connectionState == ConnectionState.done) {
+                  Map<String, dynamic> data =
+                      snapshot.data.data() as Map<String, dynamic>;
+                  return Container(
+                    margin: EdgeInsets.only(top: height * 5 / 100),
+                    width: width * 90 / 100,
+                    height: height * 40 / 100,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TitleText(
+                            title: data["title"],
+                            fontSize: 20,
+                            fontWeight: FontWeight.w700),
+                        starsAndReviews(data),
+                        quantityAndPriceRow(width, data),
+                        Text(
+                          data["info"],
+                          style: TextStyle(fontWeight: FontWeight.w300),
+                        ),
+                        addToCardContainer(width, height)
+                      ],
+                    ),
+                  );
+                }
+
+                return Text("loading");
+              },
             ),
           ],
         ),
@@ -72,7 +97,7 @@ class _ProductContentState extends State<ProductContent> {
     );
   }
 
-  Row starsAndReviews() {
+  Row starsAndReviews(Map<String, dynamic> data) {
     return Row(
       children: [
         Icon(
@@ -96,7 +121,7 @@ class _ProductContentState extends State<ProductContent> {
           color: Colors.grey[350],
         ),
         Text(
-          "4.9 (229 Reviews)",
+          "${data["point"]} (${data["reviews"]} Reviews)",
           style: TextStyle(
             color: Colors.grey[350],
           ),
@@ -105,7 +130,7 @@ class _ProductContentState extends State<ProductContent> {
     );
   }
 
-  Row quantityAndPriceRow(double width) {
+  Row quantityAndPriceRow(double width, Map<String, dynamic> data) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -132,7 +157,9 @@ class _ProductContentState extends State<ProductContent> {
                 size: 30,
               ),
               TitleText(
-                  title: "14,60", fontSize: 30, fontWeight: FontWeight.w500),
+                  title: "${data["price"]}0",
+                  fontSize: 30,
+                  fontWeight: FontWeight.w500),
             ],
           ),
         )
@@ -163,7 +190,8 @@ class _ProductContentState extends State<ProductContent> {
         width: width,
         height: height * 10 / 100,
         decoration: BoxDecoration(
-            color: Colors.pink, borderRadius: BorderRadius.circular(12)),
+            color: Color.fromRGBO(221, 66, 134, 1),
+            borderRadius: BorderRadius.circular(12)),
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Text(

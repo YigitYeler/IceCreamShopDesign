@@ -13,7 +13,15 @@ class AppBarIcon extends StatelessWidget {
       padding: isLeading
           ? EdgeInsets.only(left: width * 5 / 100)
           : EdgeInsets.only(right: width * 5 / 100),
-      child: isLeading ? Icon(Icons.arrow_back) : Icon(Icons.favorite_border),
+      child: isLeading
+          ? Icon(
+              Icons.arrow_back,
+              color: Color.fromRGBO(202, 78, 91, 1),
+            )
+          : Icon(
+              Icons.favorite_border,
+              color: Color.fromRGBO(202, 78, 91, 1),
+            ),
     );
   }
 }

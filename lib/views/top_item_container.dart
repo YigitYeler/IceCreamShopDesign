@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class TopItemContainer extends StatefulWidget {
@@ -8,6 +9,8 @@ class TopItemContainer extends StatefulWidget {
 }
 
 class _TopItemContainerState extends State<TopItemContainer> {
+  CollectionReference data = FirebaseFirestore.instance.collection('data');
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -19,66 +22,86 @@ class _TopItemContainerState extends State<TopItemContainer> {
           color: Colors.pink, borderRadius: BorderRadius.circular(17)),
       width: width * 40 / 100,
       height: height * 30 / 100,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            height: height * 15 / 100,
-            width: width * 40 / 100,
-            decoration: BoxDecoration(
-              color: Colors.red,
-              borderRadius: BorderRadius.circular(17),
-            ),
-          ),
-          Text(
-            "Top Item",
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              fontSize: 15,
-            ),
-          ),
-          Text(
-            "With strawberry jam",
-            style: TextStyle(
-              fontWeight: FontWeight.w100,
-              fontSize: 15,
-            ),
-          ),
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: FutureBuilder<DocumentSnapshot>(
+        future: data.doc("topItem").get(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text("Something went wrong");
+          }
+
+          if (snapshot.hasData && !snapshot.data.exists) {
+            return Text("Document does not exist");
+          }
+
+          if (snapshot.connectionState == ConnectionState.done) {
+            Map<String, dynamic> data =
+                snapshot.data.data() as Map<String, dynamic>;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
+                  height: height * 15 / 100,
+                  width: width * 40 / 100,
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(17),
+                  ),
+                ),
+                Text(
+                  "${data["title"]}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                  ),
+                ),
+                Text(
+                  "${data["info"]}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w100,
+                    fontSize: 15,
+                  ),
+                ),
+                Container(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Icon(
-                        Icons.attach_money,
-                        color: Colors.red,
-                      ),
-                      Text(
-                        "14,60",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 17,
+                      Container(
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.attach_money,
+                              color: Colors.red,
+                            ),
+                            Text(
+                              "${data["price"]}",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                      FloatingActionButton(
+                        onPressed: () {},
+                        mini: true,
+                        backgroundColor: Colors.red,
+                        child: Icon(
+                          Icons.add,
+                          size: 30,
+                        ),
+                      )
                     ],
                   ),
                 ),
-                FloatingActionButton(
-                  onPressed: () {},
-                  mini: true,
-                  backgroundColor: Colors.red,
-                  child: Icon(
-                    Icons.add,
-                    size: 30,
-                  ),
-                )
               ],
-            ),
-          ),
-        ],
+            );
+          }
+
+          return Text("loading");
+        },
       ),
     );
   }
