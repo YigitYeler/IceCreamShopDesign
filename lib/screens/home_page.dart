@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ice_cream_shop/views/popular_ice_cream_view.dart';
+import 'package:ice_cream_shop/views/title_text_view.dart';
 import 'package:ice_cream_shop/views/title_view.dart';
 import 'package:ice_cream_shop/views/top_flavours_view.dart';
 import 'package:ice_cream_shop/views/top_item_container.dart';
@@ -40,31 +41,22 @@ class _HomePageState extends State<HomePage> {
                   )
                 ],
               ),
-              Text(
-                "Top Flavours",
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
+              TitleText(
+                  title: "Top Flavours",
                   fontSize: 17,
-                ),
-              ),
+                  fontWeight: FontWeight.w700),
               TopFlavours(),
-              Text(
-                "Popular Ice Cream",
-                style: TextStyle(
-                  fontWeight: FontWeight.w700,
+              TitleText(
+                  title: "Popular Ice Cream",
                   fontSize: 17,
-                ),
-              ),
+                  fontWeight: FontWeight.w700),
               PopularIceCream(),
               Padding(
                 padding: const EdgeInsets.only(top: 20),
-                child: Text(
-                  "Top Item",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
+                child: TitleText(
+                    title: "Top Item",
                     fontSize: 17,
-                  ),
-                ),
+                    fontWeight: FontWeight.w700),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
