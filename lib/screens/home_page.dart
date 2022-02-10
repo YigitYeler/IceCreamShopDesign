@@ -51,18 +51,20 @@ class _HomePageState extends State<HomePage> {
                   fontSize: 17,
                   fontWeight: FontWeight.w700),
               PopularIceCream(),
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: TitleText(
-                    title: "Top Item",
-                    fontSize: 17,
-                    fontWeight: FontWeight.w700),
+              TitleText(
+                title: "Top Item",
+                fontSize: 17,
+                fontWeight: FontWeight.w700,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  TopItemContainer(),
-                  TopItemContainer(),
+                  TopItemContainer(
+                    sayi: 0,
+                  ),
+                  TopItemContainer(
+                    sayi: 1,
+                  ),
                 ],
               )
             ],
@@ -74,10 +76,10 @@ class _HomePageState extends State<HomePage> {
 
   Container filterContainer(double height, double width) {
     return Container(
-      height: height * 8 / 100,
+      height: height * 6 / 100,
       width: width * 23 / 100,
       decoration: BoxDecoration(
-          color: Color(0xFFFC659D), borderRadius: BorderRadius.circular(10)),
+          color: Color(0xffFB4387), borderRadius: BorderRadius.circular(10)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -96,7 +98,7 @@ class _HomePageState extends State<HomePage> {
 
   Container inputContainer(double width, double height, BuildContext context) {
     return Container(
-      height: height * 9.7 / 100,
+      height: height * 7.5 / 100,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),
         color: Colors.grey[300],

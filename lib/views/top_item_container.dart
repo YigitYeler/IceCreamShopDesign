@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class TopItemContainer extends StatefulWidget {
-  const TopItemContainer({Key key}) : super(key: key);
+  final int sayi;
+  const TopItemContainer({Key key, @required this.sayi}) : super(key: key);
 
   @override
   _TopItemContainerState createState() => _TopItemContainerState();
@@ -16,10 +17,12 @@ class _TopItemContainerState extends State<TopItemContainer> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Container(
-      margin: EdgeInsets.only(top: height * 1 / 100),
+      margin: EdgeInsets.only(),
       padding: EdgeInsets.symmetric(horizontal: width * 2 / 100),
       decoration: BoxDecoration(
-          color: Colors.pink, borderRadius: BorderRadius.circular(17)),
+        color: widget.sayi == 0 ? Color(0xffDEF4FF) : Color(0xffFADADD),
+        borderRadius: BorderRadius.circular(17),
+      ),
       width: width * 40 / 100,
       height: height * 30 / 100,
       child: FutureBuilder<DocumentSnapshot>(
@@ -44,9 +47,17 @@ class _TopItemContainerState extends State<TopItemContainer> {
                   height: height * 15 / 100,
                   width: width * 40 / 100,
                   decoration: BoxDecoration(
-                    color: Colors.red,
                     borderRadius: BorderRadius.circular(17),
                   ),
+                  child: widget.sayi == 0
+                      ? Image.asset(
+                          "images/sherbet0.png",
+                          scale: 1,
+                        )
+                      : Image.asset(
+                          "images/sherbet1.png",
+                          scale: 1,
+                        ),
                 ),
                 Text(
                   "${data["title"]}",
@@ -87,7 +98,7 @@ class _TopItemContainerState extends State<TopItemContainer> {
                       FloatingActionButton(
                         onPressed: () {},
                         mini: true,
-                        backgroundColor: Colors.red,
+                        backgroundColor: Color(0xffFB4387),
                         child: Icon(
                           Icons.add,
                           size: 30,

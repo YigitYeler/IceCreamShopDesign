@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ice_cream_shop/screens/product_content_page.dart';
 
 class TopFlavours extends StatefulWidget {
   const TopFlavours({Key key}) : super(key: key);
@@ -31,11 +32,11 @@ class _TopFlavoursState extends State<TopFlavours> {
               snapshot.data.data() as Map<String, dynamic>;
           return Container(
             decoration: BoxDecoration(
-              color: Colors.pink,
+              color: Color(0xffFADADD),
               borderRadius: BorderRadius.circular(17),
             ),
             width: width,
-            height: height * 20 / 100,
+            height: height * 18 / 100,
             child: Row(
               children: [
                 imageContainer(height, width),
@@ -95,9 +96,14 @@ class _TopFlavoursState extends State<TopFlavours> {
             ),
           ),
           FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProductContent()),
+              );
+            },
             mini: true,
-            backgroundColor: Colors.red,
+            backgroundColor: Color(0xffFB4387),
             child: Icon(
               Icons.add,
               size: 30,
@@ -152,8 +158,12 @@ class _TopFlavoursState extends State<TopFlavours> {
       height: height * 20 / 100,
       width: width * 35 / 100,
       decoration: BoxDecoration(
-        color: Colors.red,
+        color: Color(0xffFADADD),
         borderRadius: BorderRadius.circular(17),
+      ),
+      child: Image.asset(
+        'images/vanillaicecream.png',
+        scale: 0.8,
       ),
     );
   }

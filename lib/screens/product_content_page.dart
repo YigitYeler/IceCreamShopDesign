@@ -46,6 +46,10 @@ class _ProductContentState extends State<ProductContent> {
                   bottomLeft: Radius.circular(40),
                 ),
               ),
+              child: Image.asset(
+                "images/raspberry.png",
+                scale: 1.35,
+              ),
             ),
             FutureBuilder<DocumentSnapshot>(
               future: data.doc("product").get(),
@@ -173,8 +177,11 @@ class _ProductContentState extends State<ProductContent> {
         width: width * 6.4 / 100,
         height: width * 6.4 / 100,
         decoration: BoxDecoration(
+          gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [Colors.pink, Color(0xffFB5696)]),
           borderRadius: BorderRadius.circular(5),
-          color: Colors.pink,
         ),
         child: Icon(
           icon,
@@ -190,10 +197,14 @@ class _ProductContentState extends State<ProductContent> {
         width: width,
         height: height * 10 / 100,
         decoration: BoxDecoration(
-            color: Color.fromRGBO(221, 66, 134, 1),
-            borderRadius: BorderRadius.circular(12)),
+          borderRadius: BorderRadius.circular(12),
+          gradient: LinearGradient(
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+              colors: [Colors.pink, Color(0xffFB5696)]),
+        ),
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.only(top: height * 3.7 / 100),
           child: Text(
             "Add to Card",
             textAlign: TextAlign.center,
